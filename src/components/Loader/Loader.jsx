@@ -1,5 +1,6 @@
 import { LoaderContainer } from './Loader.styled';
 import { Blocks } from 'react-loader-spinner';
+
 const Loader = () => {
   return (
     <LoaderContainer>
