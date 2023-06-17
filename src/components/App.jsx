@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import Searchbar from './Searchbar';
 import ImageGallery from './ImageGallery';
@@ -8,32 +8,36 @@ import { AppContainer, Message } from 'App.styled';
 import { fetchGalleryImages } from 'services/apiGallery';
 import { toast } from 'react-toastify';
 
-export class App extends Component {
-  state = {
-    query: '',
-    gallery: [],
-    page: 1,
-    totalHits: 0,
-    loading: false,
-    error: false,
-  };
+export function App() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [gallery, setGallery] = useState([]);
+  const [page, setPage] = useState(1);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [totalHits, setTotalHits] = useState(0);
 
-  componentDidUpdate(_, prevState) {
-    const { query: prevQuery, page: prevPage } = prevState;
-    const { query, page } = this.state;
-
-    if (prevQuery !== query || prevPage !== page) {
-      this.setState({ page: 1, gallery: [], loading: true });
-      if (page === 1) {
-        this.fetchImages(query, page);
-      }
-    }
+  function reset() {
+    setGallery([]);
+    setTotalHits(0);
+    setPage(1);
+    setError(false);
+    setLoading(false);
   }
 
-  fetchImages = (query, page) => {
-    this.setState({ loading: true });
+  useEffect(() => {
+    reset();
+    setSearchQuery(searchQuery);
+  }, [searchQuery]);
 
-    fetchGalleryImages(query, page)
+  useEffect(() => {
+    if (!searchQuery) {
+      setError(false);
+      return;
+    }
+
+    setLoading(true);
+
+    fetchGalleryImages(searchQuery, page)
       .then(data => {
         const { hits, totalHits } = data;
         if (!hits.length) {
@@ -47,43 +51,38 @@ export class App extends Component {
             largeImageURL,
           })
         );
-        this.setState(prevState => ({
-          gallery: [...prevState.gallery, ...newItems],
-          totalHits,
-        }));
+        setGallery(prev => [...prev, ...newItems]);
+        setTotalHits(totalHits);
       })
+
       .catch(error => {
-        console.log(error);
-        this.setState({ error: true, totalHits: 0 });
+        toast.error(error.message);
+        setError(true);
       })
-      .finally(() => this.setState({ loading: false }));
+
+      .finally(() => setLoading(false));
+  }, [searchQuery, page]);
+
+  const handleFormSubmit = query => {
+    setSearchQuery(query);
   };
 
-  handleFormSubmit = query => {
-    this.setState({ query, gallery: [], page: 1, totalHits: 0 });
+  const loadMore = () => {
+    setPage(prev => prev + 1);
   };
 
-  loadMore = () => {
-    this.setState(prevState => ({
-      page: prevState.page + 1,
-    }));
-  };
+  return (
+    <AppContainer>
+      <Searchbar onSubmit={handleFormSubmit} />
 
-  render() {
-    const { error, loading, gallery, totalHits } = this.state;
+      {error && <Message>Please enter a word to start the search</Message>}
+      {!error && <ImageGallery gallery={gallery} />}
+      {loading && <Loader />}
 
-    return (
-      <AppContainer>
-        <Searchbar onSubmit={this.handleFormSubmit} />
+      {gallery.length < totalHits && <Button onClick={loadMore} />}
 
-        {error && <Message>Please enter a word to start the search</Message>}
-        {!error && <ImageGallery gallery={gallery} />}
-        {loading && <Loader />}
-
-        {gallery.length < totalHits && <Button onClick={this.loadMore} />}
-
-        <ToastContainer autoClose={3000} theme="colored" />
-      </AppContainer>
-    );
-  }
+      <ToastContainer autoClose={3000} theme="colored" />
+    </AppContainer>
+  );
 }
+// export default App;

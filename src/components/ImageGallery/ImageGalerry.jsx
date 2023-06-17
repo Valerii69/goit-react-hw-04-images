@@ -1,4 +1,5 @@
 import ImageGalleryItem from 'components/ImageGalleryItem';
+
 import { Gallery } from './ImageGallery.styled';
 // import { fetchGalleryImages } from 'services/apiGallery';
 
