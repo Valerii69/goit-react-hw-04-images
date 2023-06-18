@@ -16,26 +16,18 @@ export function App() {
   const [loading, setLoading] = useState(false);
   const [totalHits, setTotalHits] = useState(0);
 
-  function reset() {
-    setGallery([]);
-    setTotalHits(0);
-    setPage(1);
-    setError(false);
-    setLoading(false);
-  }
+  // useEffect(() => {
+  //   reset();
+  //   setSearchQuery(searchQuery);
+  // }, [searchQuery]);
 
   useEffect(() => {
-    reset();
-    setSearchQuery(searchQuery);
-  }, [searchQuery]);
-
-  useEffect(() => {
-    if (!searchQuery) {
-      setError(false);
+    if (!searchQuery)
+      // setError(false);
       return;
-    }
 
     setLoading(true);
+    setError(false);
 
     fetchGalleryImages(searchQuery, page)
       .then(data => {
@@ -65,6 +57,11 @@ export function App() {
 
   const handleFormSubmit = query => {
     setSearchQuery(query);
+    setGallery([]);
+    setTotalHits(0);
+    setPage(1);
+    // setError(false);
+    // setLoading(false);
   };
 
   const loadMore = () => {
