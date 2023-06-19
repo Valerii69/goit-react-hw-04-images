@@ -12,9 +12,7 @@ const Modal = ({ onClose, children }) => {
         onClose();
       }
     };
-
     window.addEventListener('keydown', handleKeydownCloseModal);
-
     return () => {
       window.removeEventListener('keydown', handleKeydownCloseModal);
     };
