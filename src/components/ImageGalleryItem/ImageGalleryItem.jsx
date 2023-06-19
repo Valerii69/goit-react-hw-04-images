@@ -2,6 +2,7 @@ import Modal from 'components/Modal';
 import { useState } from 'react';
 import { GalleryItem, GalleryItemImage } from './ImageGalleryItem.styled';
 import PropTypes from 'prop-types';
+import { memo } from 'react';
 
 function ImageGalleryItem({ id, webformatURL, largeImageURL, tags }) {
   const [showModal, setShowModal] = useState(false);
@@ -31,5 +32,5 @@ ImageGalleryItem.propTypes = {
   tags: PropTypes.string.isRequired,
 };
 
-export default ImageGalleryItem;
+export default memo(ImageGalleryItem);
 // export default ImageGalleryItem;
