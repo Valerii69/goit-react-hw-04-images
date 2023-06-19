@@ -16,15 +16,8 @@ export function App() {
   const [loading, setLoading] = useState(false);
   const [totalHits, setTotalHits] = useState(0);
 
-  // useEffect(() => {
-  //   reset();
-  //   setSearchQuery(searchQuery);
-  // }, [searchQuery]);
-
   useEffect(() => {
-    if (!searchQuery)
-      // setError(false);
-      return;
+    if (!searchQuery) return;
 
     setLoading(true);
     setError(false);
@@ -60,8 +53,6 @@ export function App() {
     setGallery([]);
     setTotalHits(0);
     setPage(1);
-    // setError(false);
-    // setLoading(false);
   };
 
   const loadMore = () => {
@@ -82,4 +73,3 @@ export function App() {
     </AppContainer>
   );
 }
-// export default App;
