@@ -7,8 +7,9 @@ function ImageGalleryItem({ id, webformatURL, largeImageURL, tags }) {
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <GalleryItem onClick={() => setShowModal(true)}>
+    <GalleryItem>
       <GalleryItemImage
+        onClick={() => setShowModal(true)}
         id={id}
         src={webformatURL}
         alt={tags}
